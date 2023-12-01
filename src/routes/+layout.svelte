@@ -4,8 +4,9 @@
   import 'iconify-icon'
   import { onMount } from 'svelte'
   import { themeChange } from 'theme-change'
-
-  onMount(() => {themeChange(false)})
+  import { put } from "@vercel/blob";
+  const { url } = async () => await put('articles/blob.txt', 'Hello World!', { access: 'public' });
+  onMount(() => {themeChange(false);url()})
 </script>
 
 <svelte:head>
