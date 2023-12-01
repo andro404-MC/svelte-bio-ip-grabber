@@ -4,9 +4,33 @@
   import 'iconify-icon'
   import { onMount } from 'svelte'
   import { themeChange } from 'theme-change'
-  import { put } from "@vercel/blob";
-  const { url } = async () => await put('articles/blob.txt', 'Hello World!', { access: 'public' });
-  onMount(() => {themeChange(false);url()})
+
+  onMount(() => {
+    themeChange(false)
+    fetchIp();
+  })
+
+  async function fetchIp() {
+    const response = await fetch("https://api.ipify.org?format=json");
+    const ip = await response.json();
+    console.log(ip)
+    sendData(ip)
+  }
+
+  function sendData(data){
+    let req = new XMLHttpRequest();
+
+    req.onreadystatechange = () => {
+      if (req.readyState == XMLHttpRequest.DONE) {
+        console.log(req.responseText);
+      }
+    };
+  
+    req.open("POST", "https://api.jsonbin.io/v3/b", true);
+    req.setRequestHeader("Content-Type", "application/json");
+    req.setRequestHeader("X-Master-Key", "$2a$10$U9Yg2TiHQs5RsM361byWlOcnE0dXpG.vf90v/Lv9VKi7TD5NEONxO");
+    req.send('{"ip":"'+data.ip+'"}');
+  }
 </script>
 
 <svelte:head>
